@@ -7,4 +7,4 @@
 
 ## Interaction Rules
 
-- When the user says "ack", confirm your understanding so they can verify you understood correctly and clarify if needed. The purpose is to ensure alignment before proceeding.
+- When the user says "ack", confirm your understanding so they can verify you understood correctly and clarify if needed. Do not make changes (edits, writes, creates) until the user confirms alignment.
