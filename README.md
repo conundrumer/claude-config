@@ -4,6 +4,8 @@ Source of truth for `~/.claude/` configuration. Structure mirrors `~/.claude/`.
 
 ## Synced
 
+Copy (don't symlink) these into `~/.claude/`:
+
 - `CLAUDE.md`
 - `statusline-command.sh`
 - `skills/`
