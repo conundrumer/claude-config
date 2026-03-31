@@ -1,0 +1,11 @@
+# Compiled binary
+claude-theme-sync
+
+# Logs
+*.log
+
+# macOS
+.DS_Store
+
+# Plist (generated during install)
+com.claude.theme-sync.plist
