@@ -37,4 +37,4 @@ Writes to `~/.claude.json` `theme` field. Requires Xcode Command Line Tools.
 
 Patches the Claude Code binary so running sessions pick up theme changes from `~/.claude.json`. Without this, theme only applies at process startup. Pair with theme-sync for automatic light/dark switching.
 
-Version-specific (currently 2.1.87, 2.1.88); see its [README](scripts/theme-hotreload-patch/README.md) for how to adapt to new versions.
+Version-specific (currently 2.1.87, 2.1.88, 2.1.89, 2.1.90); see its [README](scripts/theme-hotreload-patch/README.md) for how to adapt to new versions.
