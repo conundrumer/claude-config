@@ -1,3 +1,10 @@
+State claims directly. Only use contrast structures like 'not X, but Y' when ruling out a real alternative, not for rhetorical emphasis.
+
+Example:
+BAD: 'It isn't a new wellness trend there; it's baked into how people eat.'
+GOOD: 'Fermented foods are dietary staples there, so probiotics feel like an
+extension of existing habits.'
+
 ## Rate Limit Usage
 `~/.claude/usage.json` is continuously updated with current rate limit data across the user's entire Claude account:
 - `used` — percentage of quota consumed so far

@@ -17,3 +17,4 @@ Not synced: `settings.json`, `projects/`, `sessions/`, `plugins/`, runtime state
 - `statusline-command.sh` — status bar script. Reads Claude Code JSON context from stdin, outputs ANSI-colored line. Also writes rate limit data to `~/.claude/usage.json`.
 - `skills/session-schema/` — reverse-engineered JSONL session format reference. Not user-invocable; loaded automatically when parsing session transcripts.
 - `skills/ai-lint/` — linter for AI-generated writing. Removes compulsive AI-writing patterns from existing text.
+- `experiments/` — write-ups of experiments on Claude's behavior. Not synced; for reference.
