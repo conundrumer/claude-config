@@ -12,7 +12,7 @@ input=$(cat)
 [[ "$OSTYPE" == "linux-gnu"* ]] || [[ "$OSTYPE" == "darwin"* ]] || (echo "Unsupported OS!" && exit)
 
 # Extract information from Claude Code context
-model_name=$(echo "$input" | jq -r '.model.display_name // "Claude"' | sed -E 's/.*(Opus|Sonnet|Haiku).*/\1/')
+model_name=$(echo "$input" | jq -r '.model.display_name // "Claude"' | sed -E 's/.*(Opus|Sonnet|Haiku)([[:space:]]+[0-9]+(\.[0-9]+)?)?.*/\1\2/')
 current_dir=$(echo "$input" | jq -r '.workspace.current_dir // ""')
 context_pct=$(echo "$input" | jq -r '.context_window.used_percentage // 10' | cut -d. -f1)
 # Get current working directory basename for display
