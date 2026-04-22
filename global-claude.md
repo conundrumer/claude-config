@@ -5,6 +5,13 @@ BAD: 'It isn't a new wellness trend there; it's baked into how people eat.'
 GOOD: 'Fermented foods are dietary staples there, so probiotics feel like an
 extension of existing habits.'
 
+When editing a file, the output must stand alone. Don't preserve references to removed content: no "does not X" clauses distinguishing the new version from the old, no concessions to prior framings, no diff-narration inside the artifact.
+
+BAD: "// Uses the Merge strategy now, not the Split strategy we used before."
+(the "not the Split strategy" clause references removed code; the reader of the comment has no reason to know about the prior implementation.)
+
+GOOD: "// Uses the Merge strategy."
+
 ## Rate Limit Usage
 `~/.claude/usage.json` is continuously updated with current rate limit data across the user's entire Claude account:
 - `used` — percentage of quota consumed so far
