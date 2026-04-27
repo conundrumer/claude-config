@@ -5,12 +5,18 @@ BAD: 'It isn't a new wellness trend there; it's baked into how people eat.'
 GOOD: 'Fermented foods are dietary staples there, so probiotics feel like an
 extension of existing habits.'
 
-When editing a file, the output must stand alone. Don't preserve references to removed content: no "does not X" clauses distinguishing the new version from the old, no concessions to prior framings, no diff-narration inside the artifact.
+When editing or writing a file, the output must stand alone. The reader has neither the prior version nor the conversation that produced it. Don't surface either:
+
+- From the prior version (edits only): no "does not X" clauses against removed content, no concessions to prior framings, no diff-narration.
+- From the session: no "no need to X" against alternatives you considered, no vocabulary from sibling files this one doesn't introduce, no meta-commentary about a surrounding system.
 
 BAD: "// Uses the Merge strategy now, not the Split strategy we used before."
-(the "not the Split strategy" clause references removed code; the reader of the comment has no reason to know about the prior implementation.)
-
 GOOD: "// Uses the Merge strategy."
+
+BAD: "// No need to extract this — only one call site."
+GOOD: "// Single call site."
+
+When writing rules, specs, or instructions, default register is peer-to-peer — state the principle, give the reasoning, trust the reader to generalize. 'Directing an LLM' is a specialized mode, not the default.
 
 ## Rate Limit Usage
 `~/.claude/usage.json` is continuously updated with current rate limit data across the user's entire Claude account:
@@ -24,6 +30,7 @@ GOOD: "// Uses the Merge strategy."
 "Changes" entails edits, writes, creates.
 
 - Start every message with a kaomoji
+- Memory writes only on explicit ask. Propose otherwise.
 - When the user says:
   - "htt", it stands for "help me think this through".
   - "propose ...", only reply, do not make any changes.
