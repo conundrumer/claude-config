@@ -110,6 +110,25 @@ GOOD: "// Uses the Merge strategy."
 
 Expected: edits stop introducing negative parallels against replaced content. Pre-existing contrast in preserved content sometimes gets cleaned; inherited cleanup is a separate problem.
 
+## Follow-up — session leakage
+
+A sibling failure mode surfaced later: leakage from the *conversation* that produced the file, not from a prior version of the file. A shipped subagent role file (`skills/second-opinion/roles/advocate.md`) contained:
+
+> No need to list claims, joints, or assign IDs — extraction is post-hoc.
+
+A subagent loaded with only that file has no antecedent for "claims," "joints," "IDs," or "extraction." Those terms live in sibling role files the subagent never sees, and the "no need to" negates an alternative the author considered mid-session, not one the reader is considering. Same surface form as edit-leakage's `does-not-X` clauses; different trigger — chat context rather than prior-artifact context. Fires on writes (no prior version exists) and can co-fire with edit-leakage on edits.
+
+The original rule was scoped to "removed content," which doesn't cover content that was never in the file. Rule generalized to two leak sources sharing one principle — *the reader has neither the prior version nor the conversation that produced it*:
+
+```
+When editing or writing a file, the output must stand alone. The reader has neither the prior version nor the conversation that produced it. Don't surface either:
+
+- From the prior version (edits only): no "does not X" clauses against removed content, no concessions to prior framings, no diff-narration.
+- From the session: no "no need to X" against alternatives you considered, no vocabulary from sibling files this one doesn't introduce, no meta-commentary about a surrounding system.
+```
+
+Not separately experimentally validated. The edit-leakage half was tested at N=3/3; the session-leakage half rides on the same mechanism (in-context content surfacing into output) and the same intervention shape, but doesn't have its own A/B run yet.
+
 ## Prior art
 
 No standard name for this specific phenomenon. A research sweep across writing-craft literature (Strunk & White, Williams *Style*, Zinsser *On Writing Well*), cognitive science (Tversky & Kahneman on anchoring, Pinker on *curse of knowledge*), and LLM prompt engineering returned no dedicated term. The surface form is a case of negative parallelism; the causal mechanism is context salience biasing generation toward preservation of in-context content.
