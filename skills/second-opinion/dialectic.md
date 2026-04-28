@@ -4,27 +4,11 @@ For tasks with genuine tension between positions — stress-testing a design, ad
 
 ## Roles
 
-- **`advocate`** — inhabits a view or task at full conviction. No hedging. Builds the strongest case. Spawn opposed advocates in parallel: faster, and outputs can't cross-contaminate.
-- **`synthesizer`** — consumes N outputs, analyzes the structural contradiction, produces a reconceptualization.
-- **`auditor`** — consumes a synthesis plus source material, attacks hostilely for hidden assumptions, compromise-in-disguise, undercutting defeaters. Outputs attack findings and an unresolved-joints list; does not decide continue/terminate. Measures against the current synthesis's actual shape, not against an idealized version of what it could be — i.e., attack what's on the page, not a stronger argument the synthesizer might have made.
+Each role's full spec lives in its own file under `roles/`. Spawn prompts reference these by filepath; subagents Read them on launch.
 
-## Synthesizer disciplines
-
-Before finalizing, run both checks. Either failure → redo.
-
-**Anti-compromise** — *could both advocates have proposed this feeling conciliatory?* If yes, it's compromise (split-the-difference: "on one hand / on the other hand," "balance X and Y"), not synthesis. Real synthesis cancels + preserves + elevates (Aufhebung) as a new committed position with its own shape.
-
-**Anti-absorption** — *could either advocate have written this synthesis alone?* If yes, one position got dissolved rather than synthesized ("advocate X's view with a relabel"). Real synthesis has structure neither input contained. Catch it at synthesis time — subsequent audits will keep flagging the dissolved position's joints.
-
-## Dialectic vocabulary
-
-For synthesizer/auditor work. Inject the operational move into the subagent prompt, not just the label.
-
-- **Aufhebung** — synthesis cancels + preserves + elevates. Not compromise.
-- **Generic space** — abstract structure both positions share. Often what synthesis must transcend.
-- **Emergent structure** — organizational properties in the synthesis absent in either input. Synthesizer should produce them deliberately.
-- **Self-sublation** — a position's own internal logic undermining its own premises. Often richer than comparing positions to each other.
-- **Cross-domain connection** — pull in outside-frame material when the synthesizer is stuck inside the shared generic space of both positions. Fresh domains can unlock emergent structure.
+- `roles/advocate.md` — inhabits a view at full conviction. Spawn opposed advocates in parallel: faster, and outputs can't cross-contaminate.
+- `roles/synthesizer.md` — consumes N outputs, analyzes structural contradiction, produces reconceptualization.
+- `roles/auditor.md` — attacks a synthesis hostilely for hidden assumptions, compromise-in-disguise, undercutting defeaters. Outputs objections.
 
 ## Belief-burden calibration
 
@@ -50,26 +34,83 @@ Skip for quick runs; direct text-return from the Agent tool is enough.
 
 ## Recursive dialectic
 
-### Additional roles
+### Additional role
 
-- **`orchestrator`** — Claude running the skill. Picks run dir, writes `session.md` (topic, belief-burden, scope) and round-1 vars, spawns role subagents per round, stops on TERMINATE. Artifacts — role outputs, vars files, ledgers — are opaque; pass deterministic filepaths (`<dir>/round-N/<role>.vars.md`, etc.) into subagent prompts, and the decision token in the moderator's return summary is the only signal to consume. Don't quality-audit ledgers or vars before advancing — that anchors the next round to orchestrator taste. `ls`/`wc` for existence checks are fine; `Read`/`cat`/`head`/`tail` on contents are not. Spawn prompts are templated: role reference, input/output paths, decision-token contract. No per-round judgment about convergence or termination readiness.
-- **`moderator`** — fresh subagent spawned after each round's audit. Reads the round's advocate-A.md, advocate-B.md, synthesizer.md, auditor.md, plus all prior rounds' `moderator.md` ledgers (history carrier). Has two jobs:
-  - *Decision (mechanical):* classify each audit finding. **LIVE** = new terrain, or an old joint the latest synthesis didn't preserve or load-bearingly relocate (absorbing it as-true or moving it to a site that still does the same explanatory work both count). **RESOLVED** = old joint the latest synthesis addressed. R1 joints are all-LIVE by construction. Any LIVE → `CONTINUE`; all-RESOLVED → `TERMINATE` with residue. Classification alone determines the call.
-  - *Round prep (judgment):* on CONTINUE, author the next round's vars files (`advocate-A.vars.md`, `advocate-B.vars.md`, `synthesizer.vars.md`, `auditor.vars.md`) based on classified LIVE joints plus the advocates'/synthesizer's actual prior output. Auditor.vars carries attack-surface targeting only — no convergence or termination-readiness guidance.
-  - Writes the ledger (`round-N/moderator.md`) and all vars files via the Write tool. Returns a brief summary whose **final line** is `CONTINUE` or `TERMINATE: <residue>` — the decision token the orchestrator parses.
+- `roles/moderator.md` — fresh subagent spawned after each round's audit. Classifies objections as LIVE/RESOLVED, assigns T-IDs to new threads, writes the round's live-thread snapshot. Returns a decision token.
+
+The orchestrator (Claude running the skill) picks the run dir, writes `session.md`, spawns role subagents per round, stops on TERMINATE. Artifacts — role outputs, per-round threads.md — are opaque; pass deterministic filepaths into subagent prompts, and the decision token in the moderator's return summary is the only signal to consume. Don't quality-audit role outputs before advancing — that anchors the next round to orchestrator taste. `ls`/`wc` for existence checks are fine; `Read`/`cat`/`head`/`tail` on contents are not. No per-round judgment about convergence or termination readiness.
+
+### Spawn prompt template
+
+Role spawns follow this template:
+
+```
+You are <role> in round <n> of a dialectic.
+
+Read list (do not read anything else):
+1. <role spec path>
+2. <other inputs>
+
+Complete the primary task per <role spec>. Write to <primary-path>.
+```
+
+The lockout prevents the agent from pulling in adjacent specs that would skew the primary task.
+
+Per-role inputs:
+- **advocate**: `session.md`; in N>1 also prior `threads.md` and prior `synthesizer.md`
+- **synth**: `session.md` + this round's `advocate-A.md`, `advocate-B.md`; in N>1 also prior `threads.md` and prior `synthesizer.md`
+- **auditor**: this round's `advocate-A.md`, `advocate-B.md`, `synthesizer.md`, `synth-threads.md`; in N>1 also prior `threads.md` and prior `synthesizer.md`
+- **moderator**: this round's `advocate-A.md`, `advocate-B.md`, `synthesizer.md`, `synth-threads.md`, `auditor.md`; in N>1 also prior `threads.md`; in N>2 also prior `moderator.md` (its `## Recurrence` section feeds the cross-round recurrence check)
+
+### `session.md`
+
+Orchestrator writes this once at run start. Contains:
+
+```markdown
+# Session
+
+## Topic
+<topic>
+
+## Scope
+<scope>
+
+## Positions
+- A: <one-sentence position>
+- B: <one-sentence position>
+
+## Belief-burden notes
+<orchestrator reasoning — why A holds this and B holds that>
+```
+
+Both advocates read the same `session.md` and pick up their own line from `## Positions`. The synthesizer reads it for run context. Auditor and moderator don't read it.
 
 ### Composition
 
 - **recurse-until-resolved**: each round is advocate × 2 → synth → audit → moderator, repeated until moderator returns TERMINATE.
 
+### After TERMINATE
+
+The orchestrator returns the path to the final round's `synthesizer.md` (the substantive output the dialectic landed on), the moderator's residue prose (in the final round's `moderator.md`), and the final `threads.md` (any threads still LIVE — the questions the dialectic deliberately left open). On `reason: recurrence`, the dialectic terminated at structural impasse rather than honest resolution — flag this in the return summary. The full per-round trail remains on disk as the audit trail.
+
 ### File layout
 
 ```
 <dir>/
-  session.md                 # topic, belief-burden, scope — orchestrator writes once
+  session.md                 # topic, scope, positions, belief-burden — orchestrator writes once
   round-N/
-    advocate-A.md, advocate-B.md, synthesizer.md, auditor.md, moderator.md
-    <role>.vars.md           # fresh per round (orchestrator R1; moderator R2+)
+    advocate-A.md, advocate-B.md
+    synthesizer.md           # prose + ## Structural move + ## New claims
+    synth-threads.md         # ## New threads + ## Disposition
+    auditor.md
+    moderator.md
+    threads.md               # live-thread snapshot at end of round N (moderator's secondary output)
 ```
 
-Role prompts reference definitions and disciplines by filepath, not by quoting (stable paths cache across turns).
+Each `round-N/threads.md` is a write-once snapshot of the state at the end of round N. Roles in round N+1 read it as `round-<n-1>/threads.md` for the inherited live-thread set.
+
+Role prompts reference definitions by filepath, not by quoting (stable paths cache across turns).
+
+### Move-pass (opt-in)
+
+Off by default. When the user opts in (e.g., "with move-pass"), advocate / synth / auditor each produce an additional structured-moves file per round. Read `move-pass.md` for the protocol, file-layout addition, and spawn extension; otherwise ignore.
