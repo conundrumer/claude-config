@@ -7,6 +7,10 @@ TARGET="$HOME/.claude"
 rsync -av "$REPO_DIR/global-claude.md" "$TARGET/CLAUDE.md"
 rsync -av "$REPO_DIR/statusline-command.sh" "$TARGET/"
 
-rsync -av "$REPO_DIR/skills/" "$TARGET/skills/"
+mkdir -p "$TARGET/skills"
+for skill in "$REPO_DIR/skills"/*/; do
+  name=$(basename "$skill")
+  rsync -av --delete "$skill" "$TARGET/skills/$name/"
+done
 
 echo "Synced to $TARGET"
