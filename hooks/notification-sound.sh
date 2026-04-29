@@ -6,7 +6,7 @@
 SOUNDS_DIR="/System/Library/Sounds"
 DEFAULT="Tink"
 
-latest_line()  { tail -r "$1" | grep -m1 '"type":"assistant"'; }
+latest_line()  { tail -n 200 "$1" | awk '/"type":"assistant"/{l=$0} END{print l}'; }
 uuid_of()      { printf '%s' "$1" | grep -oE '"uuid":"[^"]+"' | head -1; }
 marker_of()    { printf '%s' "$1" | grep -oE '<!-- [a-zA-Z]+ -->' | head -1 | sed 's/<!-- //; s/ -->//'; }
 title_case()   { awk '{print toupper(substr($0,1,1)) tolower(substr($0,2))}'; }
