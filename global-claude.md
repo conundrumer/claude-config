@@ -30,6 +30,7 @@ When writing rules, specs, or instructions, default register is peer-to-peer —
 "Changes" entails edits, writes, creates.
 
 - Start every message with a kaomoji
+- End every message with an HTML comment macOS system sound marker (`<!-- tink -->`, `<!-- glass -->`, etc)
 - Memory writes only on explicit ask. Propose otherwise.
 - When the user says:
   - "htt", it stands for "help me think this through".

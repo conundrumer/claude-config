@@ -7,14 +7,18 @@ Personal source-of-truth for `~/.claude/` configuration. Structure mirrors `~/.c
 `./sync.sh` copies deliverables into `~/.claude/` via rsync (one-way, not symlinked):
 - `global-claude.md` → `~/.claude/CLAUDE.md`
 - `statusline-command.sh` → `~/.claude/statusline-command.sh`
+- `hooks/` → `~/.claude/hooks/`
 - `skills/` → `~/.claude/skills/`
 
-Not synced: `settings.json`, `projects/`, `sessions/`, `plugins/`, runtime state.
+`settings.json` is managed by hand. `sync.sh` makes one exception: it uses `jq` to idempotently register the notification-sound Stop hook, leaving any other Stop hooks already there in place. Deploying the script also wires it up.
+
+Not synced: `projects/`, `sessions/`, `plugins/`, runtime state.
 
 ## Key files
 
 - `global-claude.md` — global CLAUDE.md instructions deployed to all projects. Edit here, sync to deploy.
 - `statusline-command.sh` — status bar script. Reads Claude Code JSON context from stdin, outputs ANSI-colored line. Also writes rate limit data to `~/.claude/usage.json`.
+- `hooks/notification-sound.sh` — Stop hook. An HTML-comment marker (`<!-- glass -->`, `<!-- funk -->`, etc.) at the end of the assistant's last message names a macOS system sound to play. The marker is invisible in render but lives in the JSONL transcript, which the hook reads via the `transcript_path` it receives on stdin. Defaults to Tink.
 - `skills/session-schema/` — reverse-engineered JSONL session format reference. Not user-invocable; loaded automatically when parsing session transcripts.
 - `skills/ai-lint/` — linter for AI-generated writing. Removes compulsive AI-writing patterns from existing text.
 - `experiments/` — write-ups of experiments on Claude's behavior. Not synced; for reference.
