@@ -46,6 +46,32 @@ color_for_pct() {
     fi
 }
 
+# Sessions can reset on :00 or :30, so round to the nearest half-hour and
+# include minutes only when non-zero. Args: $1 epoch, $2 kind (5h|7d).
+format_reset_label() {
+    local epoch=$(( ($1 + 900) / 1800 * 1800 ))
+    local kind=$2
+    if [[ "$OSTYPE" == "darwin"* ]]; then
+        local minute=$(date -r "$epoch" '+%M')
+        local time_fmt='%-l%p'
+        [ "$minute" = "30" ] && time_fmt='%-l:%M%p'
+        if [ "$kind" = "7d" ]; then
+            date -r "$epoch" "+%a, $time_fmt" | tr '[:upper:]' '[:lower:]' | sed 's/ //2'
+        else
+            date -r "$epoch" "+$time_fmt" | tr '[:upper:]' '[:lower:]' | tr -d ' '
+        fi
+    else
+        local minute=$(date -d "@$epoch" '+%M')
+        local time_fmt='%-Hh'
+        [ "$minute" = "30" ] && time_fmt='%-H:%M'
+        if [ "$kind" = "7d" ]; then
+            date -d "@$epoch" "+%a:$time_fmt"
+        else
+            date -d "@$epoch" "+$time_fmt"
+        fi
+    fi
+}
+
 CTX_COLOR=$(color_for_pct "$context_pct")
 
 # --- Usage limits (5-hour and 7-day) from statusline JSON (v2.1.80+) ---
@@ -72,11 +98,7 @@ if [ -n "$resets_5h" ]; then
     [ "$elapsed" -lt 0 ] && elapsed=0
     [ "$elapsed" -gt "$window_secs" ] && elapsed=$window_secs
     target_5h=$(( (elapsed * 100 + window_secs / 2) / window_secs))
-    if [[ "$OSTYPE" == "darwin"* ]]; then
-        resets_5h_label=$(date -r "$(( (reset_epoch + 1800) / 3600 * 3600 ))" '+%-l%p' | tr '[:upper:]' '[:lower:]' | tr -d ' ')
-    else
-        resets_5h_label=$(date -d "@$(( (reset_epoch + 1800) / 3600 * 3600 ))" +%-Hh)
-    fi
+    resets_5h_label=$(format_reset_label "$reset_epoch" 5h)
 fi
 
 # 7-day pacing target
@@ -88,11 +110,7 @@ if [ -n "$resets_7d" ]; then
     [ "$elapsed" -lt 0 ] && elapsed=0
     [ "$elapsed" -gt "$window_secs" ] && elapsed=$window_secs
     target_7d=$(( (elapsed * 100 + window_secs / 2) / window_secs))
-    if [[ "$OSTYPE" == "darwin"* ]]; then
-        resets_7d_label=$(date -r "$(( (reset_epoch + 1800) / 3600 * 3600 ))" '+%a, %-l%p' | tr '[:upper:]' '[:lower:]' | sed 's/ //2')
-    else
-        resets_7d_label=$(date -d "@$(( (reset_epoch + 1800) / 3600 * 3600 ))" '+%a:%-kh')
-    fi
+    resets_7d_label=$(format_reset_label "$reset_epoch" 7d)
 fi
 
 # Compute seconds until reset
