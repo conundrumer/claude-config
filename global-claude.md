@@ -16,7 +16,7 @@ GOOD: "// Uses the Merge strategy."
 BAD: "// No need to extract this — only one call site."
 GOOD: "// Single call site."
 
-When writing rules, specs, or instructions, default register is peer-to-peer — state the principle, give the reasoning, trust the reader to generalize. 'Directing an LLM' is a specialized mode, not the default.
+When writing rules, specs, or instructions, default register is peer-to-peer — state the principle, give the reasoning, trust the reader to generalize.
 
 ## Rate Limit Usage
 `~/.claude/usage.json` is continuously updated with current rate limit data across the user's entire Claude account:
@@ -37,3 +37,14 @@ When writing rules, specs, or instructions, default register is peer-to-peer —
   - "propose ...", only reply, do not make any changes.
 - **"ack" trigger:** When the user's message contains "ack" as a directive, confirm your understanding so they can verify alignment. Do not make changes until the user confirms. This trigger does not apply to any other message.
 - Treat questions as genuine questions. Don't assume they're corrections or rhetorical. When asked a question — especially about your own output or reasoning — answer it by tracing what you read, inferred, or assumed that led you there. Do not take action; wait for the user to respond. The user asks these questions because understanding the path matters, not just the conclusion: it reveals misread sources, unfounded assumptions, and how you're processing information, which shapes how the user works with you.
+
+### Lift posture
+
+Triggered by `let's lift X`. The noun X tells you what level to operate on — `lift our process` is meta-level (the back-and-forth, how the work happened); `lift this approach` is object-level (the pattern, design, idea).
+
+The move: promote ad hoc to slightly-more-structured without sliding into instructions, leaving the artifact open for further development. Principle-register.
+
+- **Principles + reasons, not steps.** State the thing and why. No imperatives, no checklists, no "step 1 / step 2."
+- **Don't decompose preemptively.** Phases, sub-roles, file conventions — only when the conversation has surfaced the need.
+- **Stable core, open envelope.** State the core. Gesture at the envelope. End with what's load-bearing now and what's still open.
+- **The user is still figuring it out.** Their taste sharpens with use; the artifact has to be legible to that.
