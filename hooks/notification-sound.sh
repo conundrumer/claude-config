@@ -2,6 +2,9 @@
 # Stop hook. Plays a macOS system sound when a response ends. An HTML-comment
 # marker in the assistant's last message names the sound: `<!-- glass -->`
 # → Glass.aiff. Missing or unknown name → Tink.
+#
+# Marker read and playback run in a backgrounded subshell so the hook exits
+# without gating the end-of-turn lifecycle.
 
 SOUNDS_DIR="/System/Library/Sounds"
 DEFAULT="Tink"
@@ -20,20 +23,21 @@ resolve_sound() {
 }
 
 transcript=$(jq -r '.transcript_path // empty')
-sound="$DEFAULT"
 
-if [ -n "$transcript" ] && [ -f "$transcript" ]; then
-  # Stop fires before Claude Code flushes the final assistant line, so the
-  # file may still hold the prior turn. Wait for the latest assistant `uuid`
-  # to change, then read. Cap at ~1.5s.
-  initial=$(uuid_of "$(latest_line "$transcript")")
-  for _ in 1 2 3 4 5 6 7 8; do
-    line=$(latest_line "$transcript")
-    current=$(uuid_of "$line")
-    [ -n "$current" ] && [ "$current" != "$initial" ] && break
-    sleep 0.2
-  done
-  sound=$(resolve_sound "$line")
-fi
-
-afplay "$SOUNDS_DIR/${sound}.aiff" 2>/dev/null &
+(
+  sound="$DEFAULT"
+  if [ -n "$transcript" ] && [ -f "$transcript" ]; then
+    # Stop fires before Claude Code flushes the final assistant line, so the
+    # file may still hold the prior turn. Wait for the latest assistant `uuid`
+    # to change, then read. Cap at ~1.5s.
+    initial=$(uuid_of "$(latest_line "$transcript")")
+    for _ in 1 2 3 4 5 6 7 8; do
+      line=$(latest_line "$transcript")
+      current=$(uuid_of "$line")
+      [ -n "$current" ] && [ "$current" != "$initial" ] && break
+      sleep 0.2
+    done
+    sound=$(resolve_sound "$line")
+  fi
+  afplay "$SOUNDS_DIR/${sound}.aiff"
+) </dev/null >/dev/null 2>&1 &
