@@ -22,5 +22,26 @@ The three files below converge on a methodological finding: **concrete positive 
 
 ## Logs
 
+Come from `let's lift X` sessions (see global CLAUDE.md).
+
 - [Posture dev](posture-dev.md) — How the `lift` posture emerged.
+- [Dialectic dev](dialectic-dev.md) — How the dialectic framework emerged. Pair with `skills/dialectic/`.
 - [Experiment process](experiment-process.md) — How we run framework-development experiments using subagents and the `claude` CLI. Treatment + control, n=1 acceptable.
+
+## Experiment note format
+
+Notes follow this skeleton:
+
+- **Title + one-line frame** — `# {phenomenon}` or `# {phenomenon} via {intervention}`. One sentence underneath ("An experiment on ...").
+- **The {bug / behavior / tic / phenomenon}** — concrete examples, lifted from a real session where possible.
+- **Why** — causal account or labeled hypotheses.
+- **Question** — sharply scoped enough that the answer fits the results table.
+- **Setup** — seed material, prompt(s), environment (CLI flags, env vars, scratch-dir hygiene), manual scoring criteria.
+- **Variants** — V0 control, V1, V2, … with verbatim instruction text.
+- **Results** — table or trial log, N per condition, within-condition spread visible.
+- **Takeaways** — bolded findings, each followed by supporting evidence.
+- **Caveats** — limitations, untested cases, scoring judgment calls.
+- **Landed (or Proposed) rule** — the artifact this experiment outputs, verbatim, with expected effect size.
+- **Prior art** — adjacent literature or community discussion.
+
+Sections are omittable when they don't apply.
