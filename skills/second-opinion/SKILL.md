@@ -21,6 +21,8 @@ One subagent, neutral input. This covers typical use.
    - What kind of read is wanted (e.g., "structural flaws," "is this design sound," "find what's missing").
 4. Return the output un-sanitized. Don't pre-filter for agreeableness.
 
+**Follow-up.** Each spawn returns an `agent_id`. To re-engage the same reviewer, `SendMessage(to: "<agent_id>", message: "...")` resumes from transcript. Replies arrive as a task-completion notification.
+
 ## Invocation mode
 
 The Agent tool is the default. Both vehicles share the same tool surface (Read/Grep/Bash/WebSearch/…); the hard capability gap is **delegation** — a `claude` CLI session can spawn subagents, a subagent cannot. Reach for the CLI when the reviewer needs to delegate to keep its own context free of noise: exploring a big repo, running experiments, open-ended web research. Otherwise — artifact self-contained, critique about logic/structure — a subagent suffices.
