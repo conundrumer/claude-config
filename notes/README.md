@@ -1,0 +1,26 @@
+## Experiments
+
+### Opus 4.6 vs 4.7
+
+- [Inferential-commitment gap](opus-4-7-inferential-commitment.md) — 4.7 withholds output-posture commitment on underspecified prompts; the gate opens with "use your judgment" / "be opinionated" / "idk" (each unlocks a different posture); "your call" backfires.
+- [Peripheral flagging](opus-4-7-peripheral-flagging.md) — 4.6 catches security in sibling code, 4.7 catches structural issues in shown code, single-shot. Multi-turn unlocks 4.7 flagging by default; anti-frames re-suppress.
+- [Experimental-research capability](opus-4-7-experimental-research.md) — Nudged 4.7 ("be comprehensive") Pareto-dominates either model's default for autonomous research; defaults differ in style, not capability.
+- [Research-gap probe](opus-4-7-research-gap.md) — 4.7 wins or ties content on ~10/12 research tasks; one narrow gap where 4.7 refuses to commit on stale priors and "be opinionated" doesn't fix it ("just pick one" does). ~95% cost premium.
+
+### CLAUDE.md rule design
+
+- [Edit-context leakage](edit-leakage.md) — A short rule with a BAD/GOOD code-comment example cleanly suppresses prior-version residue inside edited artifacts; later generalized to cover session-context leakage on writes.
+- [Negative parallelism](negative-parallelism.md) — Rule + concrete example yields ~62% tic reduction; rule alone ~30%. The example does most of the work.
+
+### Instruction-authoring register
+
+The three files below converge on a methodological finding: **concrete positive action-shaped directives ("preserve verbatim," "rewrite as state") suppress instructor-register reflexes; abstract negative ontological directives ("don't invent," "don't direct future agents") don't.**
+
+- [Assumption interference](assumption-interference.md) — Claude over-specifies when authoring subagent prompts. Concrete positive directives ("preserve verbatim") suppress the interference; abstract negative ones ("don't invent") don't.
+- [Role-contract leakage](dialectic-role-leakage.md) — Subagents writing briefs for downstream roles slip into commissioner-mode without upstream cause; concrete action-shaped scope directives at each authority layer suppress the cascade.
+- [Spec over-prescription](spec-overprescription.md) — Peer-register CLAUDE.md addition is one of three co-load-bearing rules that suppress meta-rule reflex on spec edits; the addition alone is insufficient.
+
+## Logs
+
+- [Posture dev](posture-dev.md) — How the `lift` posture emerged.
+- [Experiment process](experiment-process.md) — How we run framework-development experiments using subagents and the `claude` CLI. Treatment + control, n=1 acceptable.
