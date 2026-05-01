@@ -39,6 +39,8 @@ These categories blur — a primitive validation often pulls in a small comparis
 
 **Comparison is qualitative.** Read outputs side-by-side. The signal is usually obvious — different register, different level, different shape, different engagement signature. Statistical analysis is overkill for n=1 and not what we're producing.
 
+**Temper conclusions to match the evidence.** A clean n=1 side-by-side is still n=1. "Appears to shift register toward Y in this run" beats "causes Y"; "medium basin-escape because the basin is part of the prompt's frame" beats "doesn't work." Graded claims with mechanism attached. Confounds noted earlier should show up as asterisks on the specific claims they touch, not as a generic caveat appended at the end. The user judges informativeness, and that requires seeing where the seams are.
+
 **Replicate when the finding will drive a framework decision.** A signal from n=1 is direction; sometimes that's enough. When the finding will reshape a primitive or commit you to an architecture, run it again with a different proposition or framing first.
 
 **The user judges informativeness.** Subagents and headless runs can execute autonomously; reading what a result *means* — whether it's signal, whether it's enough, what to do next — stays with the user.

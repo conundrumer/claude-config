@@ -7,6 +7,11 @@
 - [Experimental-research capability](opus-4-7-experimental-research.md) — Nudged 4.7 ("be comprehensive") Pareto-dominates either model's default for autonomous research; defaults differ in style, not capability.
 - [Research-gap probe](opus-4-7-research-gap.md) — 4.7 wins or ties content on ~10/12 research tasks; one narrow gap where 4.7 refuses to commit on stale priors and "be opinionated" doesn't fix it ("just pick one" does). ~95% cost premium.
 
+### Prompted diversity
+
+- [One-shot recipe for diverse output](diverse-output-recipe.md) — Recommended prompt: *"Pick some properties of [X]. Generate N non-obvious [X] varying across them."* 0/8 canonical leakage at n=3, model-judgment on cardinality, escapes Tier 1+2. Don't parallelize — themes converge.
+- [Prompted diversity for joke generation](prompted-diversity.md) — The probe behind the recipe. Two-tier basin structure (Tier 1 canon, Tier 2 anti-joke defaults). Direction-naming phrases ("deep cuts", "long tail") replicate across Sonnet/Opus; generic phrases ("surprise me") land in Tier 2; two-step recipes outperform single-phrase interventions on quality.
+
 ### CLAUDE.md rule design
 
 - [Edit-context leakage](edit-leakage.md) — A short rule with a BAD/GOOD code-comment example cleanly suppresses prior-version residue inside edited artifacts; later generalized to cover session-context leakage on writes.
