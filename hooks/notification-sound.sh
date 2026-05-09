@@ -1,13 +1,14 @@
 #!/bin/bash
 # Stop hook. Plays a macOS system sound when a response ends. An HTML-comment
 # marker in the assistant's last message names the sound: `<!-- glass -->`
-# → Glass.aiff. Missing or unknown name → Tink.
+# → Glass.aiff. No marker → Ping. Marker with unknown name → Tink.
 #
 # Marker read and playback run in a backgrounded subshell so the hook exits
 # without gating the end-of-turn lifecycle.
 
 SOUNDS_DIR="/System/Library/Sounds"
-DEFAULT="Tink"
+ABSENT="Ping"
+UNKNOWN="Tink"
 
 latest_line()  { tail -n 200 "$1" | awk '/"type":"assistant"/{l=$0} END{print l}'; }
 uuid_of()      { printf '%s' "$1" | grep -oE '"uuid":"[^"]+"' | head -1; }
@@ -17,15 +18,15 @@ title_case()   { awk '{print toupper(substr($0,1,1)) tolower(substr($0,2))}'; }
 resolve_sound() {
   local name sound
   name=$(marker_of "$1")
-  [ -z "$name" ] && { printf '%s' "$DEFAULT"; return; }
+  [ -z "$name" ] && { printf '%s' "$ABSENT"; return; }
   sound=$(printf '%s' "$name" | title_case)
-  [ -f "$SOUNDS_DIR/${sound}.aiff" ] && printf '%s' "$sound" || printf '%s' "$DEFAULT"
+  [ -f "$SOUNDS_DIR/${sound}.aiff" ] && printf '%s' "$sound" || printf '%s' "$UNKNOWN"
 }
 
 transcript=$(jq -r '.transcript_path // empty')
 
 (
-  sound="$DEFAULT"
+  sound="$ABSENT"
   if [ -n "$transcript" ] && [ -f "$transcript" ]; then
     # Stop fires before Claude Code flushes the final assistant line, so the
     # file may still hold the prior turn. Wait for the latest assistant `uuid`
