@@ -17,25 +17,28 @@ for skill in "$REPO_DIR/skills"/*/; do
   rsync -av --delete "$skill" "$TARGET/skills/$name/"
 done
 
-# Idempotent settings.json patch: register the notification-sound Stop hook
-# if it isn't already present. Settings is otherwise unsynced; this is the one
-# exception so hooks land wired, not just deployed.
+# Idempotent settings.json patches. Settings is otherwise unsynced; these are
+# the exceptions so behavior lands wired, not just deployed.
+# - Register the notification-sound Stop hook if absent.
+# - Default CLAUDE_CODE_FORK_SUBAGENT=1 (preserves any existing value).
 SETTINGS="$TARGET/settings.json"
 HOOK_CMD="bash ~/.claude/hooks/notification-sound.sh"
 if [ -f "$SETTINGS" ]; then
   patched=$(jq --arg cmd "$HOOK_CMD" '
     def has_cmd:
       [.hooks.Stop[]?.hooks[]?.command] | any(. == $cmd);
-    if has_cmd then .
-    else
-      .hooks //= {}
-      | .hooks.Stop //= []
-      | .hooks.Stop += [{hooks: [{type: "command", command: $cmd}]}]
-    end
+    (if has_cmd then .
+     else
+       .hooks //= {}
+       | .hooks.Stop //= []
+       | .hooks.Stop += [{hooks: [{type: "command", command: $cmd}]}]
+     end)
+    | .env //= {}
+    | .env.CLAUDE_CODE_FORK_SUBAGENT //= "1"
   ' "$SETTINGS")
   if [ "$patched" != "$(cat "$SETTINGS")" ]; then
     printf '%s\n' "$patched" > "$SETTINGS"
-    echo "Wired Stop hook in $SETTINGS"
+    echo "Updated $SETTINGS"
   fi
 fi
 
