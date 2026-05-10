@@ -10,7 +10,10 @@ Personal source-of-truth for `~/.claude/` configuration. Structure mirrors `~/.c
 - `hooks/` → `~/.claude/hooks/`
 - `skills/` → `~/.claude/skills/`
 
-`settings.json` is managed by hand. `sync.sh` makes a couple of exceptions, both via idempotent `jq` patches: it registers the notification-sound Stop hook (leaving any other Stop hooks in place), and defaults `env.CLAUDE_CODE_FORK_SUBAGENT` to `"1"` (preserves any existing value). Deploying the script also wires both up.
+`sync.sh` also applies idempotent `jq` patches to `~/.claude/settings.json`, so deploying the script wires the behavior, not just the files:
+- Registers the notification-sound Stop hook (leaves any other Stop hooks in place).
+- Registers a Notification hook that plays `Ping.aiff` on permission prompts and idle-input prompts.
+- Defaults `env.CLAUDE_CODE_FORK_SUBAGENT` to `"1"` (preserves any existing value).
 
 Not synced: `projects/`, `sessions/`, `plugins/`, runtime state.
 

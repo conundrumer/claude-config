@@ -17,22 +17,38 @@ for skill in "$REPO_DIR/skills"/*/; do
   rsync -av --delete "$skill" "$TARGET/skills/$name/"
 done
 
-# Idempotent settings.json patches. Settings is otherwise unsynced; these are
-# the exceptions so behavior lands wired, not just deployed.
+# Idempotent settings.json patches so behavior lands wired, not just deployed:
 # - Register the notification-sound Stop hook if absent.
+# - Register the permission/idle Notification hook (Ping sound) if absent.
 # - Default CLAUDE_CODE_FORK_SUBAGENT=1 (preserves any existing value).
 SETTINGS="$TARGET/settings.json"
-HOOK_CMD="bash ~/.claude/hooks/notification-sound.sh"
+STOP_CMD="bash ~/.claude/hooks/notification-sound.sh"
+NOTIF_CMD="bash ~/.claude/hooks/notification-sound-permission.sh"
+OLD_NOTIF_CMD="afplay /System/Library/Sounds/Ping.aiff"
 if [ -f "$SETTINGS" ]; then
-  patched=$(jq --arg cmd "$HOOK_CMD" '
-    def has_cmd:
-      [.hooks.Stop[]?.hooks[]?.command] | any(. == $cmd);
-    (if has_cmd then .
-     else
-       .hooks //= {}
-       | .hooks.Stop //= []
-       | .hooks.Stop += [{hooks: [{type: "command", command: $cmd}]}]
-     end)
+  patched=$(jq --arg stop_cmd "$STOP_CMD" --arg notif_cmd "$NOTIF_CMD" --arg old_notif_cmd "$OLD_NOTIF_CMD" '
+    def has_stop:
+      [.hooks.Stop[]?.hooks[]?.command] | any(. == $stop_cmd);
+    def has_notif:
+      [.hooks.Notification[]?.hooks[]?.command] | any(. == $notif_cmd);
+    # Drop any prior inline Notification hook so we do not double-fire.
+    (if .hooks.Notification then
+       .hooks.Notification |= map(
+         .hooks |= map(select(.command != $old_notif_cmd))
+       ) | .hooks.Notification |= map(select((.hooks // []) | length > 0))
+     else . end)
+    | (if has_stop then .
+       else
+         .hooks //= {}
+         | .hooks.Stop //= []
+         | .hooks.Stop += [{hooks: [{type: "command", command: $stop_cmd}]}]
+       end)
+    | (if has_notif then .
+       else
+         .hooks //= {}
+         | .hooks.Notification //= []
+         | .hooks.Notification += [{hooks: [{type: "command", command: $notif_cmd}]}]
+       end)
     | .env //= {}
     | .env.CLAUDE_CODE_FORK_SUBAGENT //= "1"
   ' "$SETTINGS")
