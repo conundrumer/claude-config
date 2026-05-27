@@ -1,6 +1,6 @@
 ---
 name: second-opinion
-description: Critique or second opinion from a fresh subagent — strips author framing to prevent anchoring. Composes into dialectic patterns for stress-testing.
+description: Fresh critique from a subagent that hasn't seen the conversation. Strips author framing to reduce anchoring.
 ---
 
 # Second Opinion

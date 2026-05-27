@@ -23,5 +23,4 @@ Not synced: `projects/`, `sessions/`, `plugins/`, runtime state.
 - `statusline-command.sh` — status bar script. Reads Claude Code JSON context from stdin, outputs ANSI-colored line. Also writes rate limit data to `~/.claude/usage.json`.
 - `hooks/notification-sound.sh` — Stop hook. An HTML-comment marker (`<!-- glass -->`, `<!-- funk -->`, etc.) at the end of the assistant's last message names a macOS system sound to play. The marker is invisible in rendered Markdown.
 - `skills/session-schema/` — reverse-engineered JSONL session format reference. Not user-invocable; loaded automatically when parsing session transcripts.
-- `skills/ai-lint/` — linter for AI-generated writing. Removes compulsive AI-writing patterns from existing text.
 - `notes/` — write-ups on Claude's behavior. See `notes/README.md` for the index — add a hook there when adding a new file. Not synced; for reference.

@@ -1,6 +1,6 @@
 ---
 name: dialectic
-description: Structured dialectic — opposed advocates + procedural judge + synthesis-mode surveyor + audited synthesis. For propositions where the consumer wants a *map* of where disagreement lives, not a fast verdict.
+description: Force structured disagreement on a claim or decision. Use when the disagreement map matters more than the answer.
 ---
 
 # Dialectic

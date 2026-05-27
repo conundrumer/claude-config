@@ -1,6 +1,6 @@
 ---
 name: claude-use
-description: Spawn and drive a `claude` CLI child from inside Claude Code — persistent stream-json session with send/steer/interrupt primitives. For testing (skills, behaviors, configurations), claude-on-claude experiments, delegated subtasks with mid-run steering, and other meta-claude orchestration.
+description: Drive a `claude` CLI child with mid-run steering. For testing skills, behaviors, or configurations against a live instance, and claude-on-claude experiments.
 ---
 
 # claude-use
@@ -37,16 +37,32 @@ Under `--permission-mode auto` in `-p`, the classifier aborts the session after 
 
 ## Isolation (for clean-room tests/experiments)
 
-Without these, the child inherits whatever is in the parent's `~/.claude`, confounding results:
+Full clean room:
 
-- `CLAUDE_CONFIG_DIR=<scratch dir>` — override `~/.claude` entirely
-- `CLAUDE_CODE_DISABLE_AUTO_MEMORY=1`
-- `CLAUDE_CODE_DISABLE_CLAUDE_MDS=1`
-- `--bare` — skip auto-discovery (requires `ANTHROPIC_API_KEY`)
-- `--disable-slash-commands`
+```bash
+SCRATCH=$(mktemp -d)
+cd /tmp  # any directory without CLAUDE.md in or above it
+CLAUDE_CONFIG_DIR="$SCRATCH" \
+  CLAUDE_CODE_DISABLE_CLAUDE_MDS=1 \
+  CLAUDE_CODE_DISABLE_AUTO_MEMORY=1 \
+  CLAUDE_CODE_OAUTH_TOKEN="$YOUR_TOKEN" \
+  claude --disable-slash-commands -p "..."
+```
+
+- `CLAUDE_CONFIG_DIR=<scratch>` — overrides `~/.claude` (skills, plugins, settings, global CLAUDE.md).
+- `CLAUDE_CODE_DISABLE_CLAUDE_MDS=1` — disables CLAUDE.md auto-discovery from the cwd hierarchy.
+- `CLAUDE_CODE_DISABLE_AUTO_MEMORY=1` — disables auto-memory loading.
+- `CLAUDE_CODE_OAUTH_TOKEN` (OAuth subscription) or `ANTHROPIC_API_KEY` (API key) — auth.
+- `--disable-slash-commands` — disables skill invocation.
+
+`claude --bare` packs most of the above (hooks, LSP, plugin sync, attribution, auto-memory, background prefetches, keychain reads, CLAUDE.md auto-discovery) into one flag. Requires `ANTHROPIC_API_KEY` or apiKeyHelper via `--settings` — OAuth and keychain are never read in bare mode.
+
+Other knobs:
 - `--setting-sources <user|project|local>` — scope which settings load
 - `--plugin-dir <path>` — load only specific plugin dirs
 - `--settings <file|json>` — inject settings inline
+
+TODO: setup CLAUDE_CODE_OAUTH_TOKEN. use setup token and put into CC_TOKEN var as convention
 
 ## Gotchas
 
@@ -55,8 +71,11 @@ Without these, the child inherits whatever is in the parent's `~/.claude`, confo
 3. **Default permission mode silently auto-denies in `-p`.** No `control_request` is emitted for permission; denials surface only in `result.permission_denials`.
 4. **Caller-sent user messages are NOT echoed on stdout** unless `--replay-user-messages`.
 5. **`type:"user"` events on stdout are tool_result deliveries**, not caller-sent turns.
-6. **Parent's CLAUDE.md and auto-memory leak into the child by default** — disable explicitly for behavioral experiments.
-7. **Leading `sleep` is blocked by the Bash tool.** To stall a tool call deterministically, wrap: `bash -c 'sleep N && ...'`.
+6. **`--disable-slash-commands` disables invocation but leaves the skill catalog in the system prompt.** Hide the catalog with `CLAUDE_CONFIG_DIR=<scratch>`.
+7. **`CLAUDE_CONFIG_DIR` override loses keychain access.** Pair with `CLAUDE_CODE_OAUTH_TOKEN` (OAuth subscription) or `ANTHROPIC_API_KEY` (API key). The slots are distinct; an OAuth token in `ANTHROPIC_API_KEY` errors "Invalid API key."
+8. **Project `CLAUDE.md` auto-discovery from cwd is independent of `CLAUDE_CONFIG_DIR`.** Disable with `CLAUDE_CODE_DISABLE_CLAUDE_MDS=1`.
+9. **Skills resolve via `/skill-name` under `--bare`.** Full suppression needs `--disable-slash-commands`.
+10. **Leading `sleep` is blocked by the Bash tool.** To stall a tool call deterministically, wrap: `bash -c 'sleep N && ...'`.
 
 ## References
 

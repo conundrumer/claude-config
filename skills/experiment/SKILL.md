@@ -1,9 +1,13 @@
 ---
 name: experiment
-description: Lightweight prompt/posture/config experiments — compare variants, validate primitives, replicate runs, survey alternatives. Treatment+control, n=1 OK, qualitative. Skip when authoritative rigor is wanted.
+description: Test Claude behavior empirically — compare prompt variants, replicate outputs, verify configurations work. Skip when rigorous results are needed.
 ---
 
 # Experiment process
+
+TODO: system prompt/agent tool prompt prescribe ways to interact w agent, like instructing and giving context, which is exactly what we don't want to do here. needs to be overridden.
+
+TODO: control-first gating — before running treatment variants, confirm the control can elicit the target behavior at all. The rough draft notes this (step 4) but the main principles section doesn't. Promote to a principle.
 
 Run framework-development experiments over Claude behavior, using subagents and the `claude` CLI.
 
@@ -64,3 +68,16 @@ JSONL location:
 ## Orchestration
 
 For headless `claude` child orchestration (fork-and-resume, isolation flags), use the `claude-use` skill. This skill answers what experiment shape to want; `claude-use` answers how to drive the children.
+
+---
+
+(rough draft)
+
+autonomous researcher mode:
+
+1. choose an experiment
+2. think of the prompt
+3. check if there's any issues with the prompt, e.g. priming. amend them. make sure it has no issues
+4. run control to make sure you can produce the behavior at all
+5. run the variants. (make sure the prompts have no issues, like with control. multiple passes)
+6. use the new info to inform next experiments
