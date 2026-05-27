@@ -15,6 +15,7 @@
 ### CLAUDE.md rule design
 
 - [Edit-context leakage](edit-leakage.md) — A short rule with a BAD/GOOD code-comment example cleanly suppresses prior-version residue inside edited artifacts; later generalized to cover session-context leakage on writes.
+- [Session-leakage detection](session-leakage-detection.md) — Phrase shootout for using the rule as a directive across 8 candidates and 5 substrates. `session leakage` wins in branched (in-session) eval, which catches more bleed than a careful manual scan. Fresh-context eval misfires on substrates whose topic could plausibly be the directive's apparent subject (e.g., a code-review playbook reads "session leakage" as a security topic). Bootstrap of artifacts whose reader is Claude reliably produces canonical Y-not-X plus defensive-rule residue.
 - [Negative parallelism](negative-parallelism.md) — Rule + concrete example yields ~62% tic reduction; rule alone ~30%. The example does most of the work.
 
 ### Instruction-authoring register

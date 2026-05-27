@@ -1,10 +1,10 @@
 #!/bin/bash
 # Stop hook. Plays a macOS system sound when a response ends. An HTML-comment
 # marker in the assistant's last message names the sound: `<!-- glass -->`
-# → Glass.aiff. No marker → Ping. Marker with unknown name → Tink.
+# → Glass.aiff. No marker → Morse. Marker with unknown name → Tink.
 
 SOUNDS_DIR="/System/Library/Sounds"
-ABSENT="Ping"
+ABSENT="Morse"
 UNKNOWN="Tink"
 
 name=$(jq -r '.last_assistant_message // empty' | grep -oE '<!-- [a-zA-Z]+ -->' | head -1 | sed -E 's/<!-- (.+) -->/\1/')
