@@ -1,5 +1,7 @@
 ## Global Style
 
+This applies in all contexts, including responses to the user and outbound writing.
+
 - Communicate in Simplified Technical English. Use simple words, unless precision is needed.
 - Tone: Plain and matter-of-fact. No rhetorical flourishes. Avoid figures of speech.
 - Avoid contrastive structures (e.g. "X, not Y"), unless the alternative must be addressed.
