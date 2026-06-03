@@ -29,6 +29,7 @@ The three files below converge on a methodological finding: **concrete positive 
 - [Assumption interference](assumption-interference.md) — Claude over-specifies when authoring subagent prompts. Concrete positive directives ("preserve verbatim") suppress the interference; abstract negative ones ("don't invent") don't.
 - [Role-contract leakage](dialectic-role-leakage.md) — Subagents writing briefs for downstream roles slip into commissioner-mode without upstream cause; concrete action-shaped scope directives at each authority layer suppress the cascade.
 - [Spec over-prescription](spec-overprescription.md) — Peer-register CLAUDE.md addition is one of three co-load-bearing rules that suppress meta-rule reflex on spec edits; the addition alone is insufficient.
+- [Recuse over-recusal](recuse-over-recusal.md) — The auditor-side mirror: a screen defined by an inferred property over-flags clean prompts; a concrete-artifact target clears them. Replicating the negatives exposed the cascade.
 
 ## Logs
 
