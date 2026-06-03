@@ -12,6 +12,10 @@
 - [One-shot recipe for diverse output](diverse-output-recipe.md) — Recommended prompt: *"Pick some properties of [X]. Generate N non-obvious [X] varying across them."* 0/8 canonical leakage at n=3, model-judgment on cardinality, escapes Tier 1+2. Don't parallelize — themes converge.
 - [Prompted diversity for joke generation](prompted-diversity.md) — The probe behind the recipe. Two-tier basin structure (Tier 1 canon, Tier 2 anti-joke defaults). Direction-naming phrases ("deep cuts", "long tail") replicate across Sonnet/Opus; generic phrases ("surprise me") land in Tier 2; two-step recipes outperform single-phrase interventions on quality.
 
+### Writing structure & selection
+
+- [Atomic structure vs. selection](atomic-structure-vs-selection.md) — Format/style levers on cleanroom answers to one question. Structure is inducible (atomic leaves, minimal NestedText on demand); selection is not (an explicit cut-for-this-reader task kept ~85%); atomization exposes units without de-fluffing. Mostly n=1, single topic/model — directional.
+
 ### CLAUDE.md rule design
 
 - [Edit-context leakage](edit-leakage.md) — A short rule with a BAD/GOOD code-comment example cleanly suppresses prior-version residue inside edited artifacts; later generalized to cover session-context leakage on writes.
