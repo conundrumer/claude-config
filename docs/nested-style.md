@@ -58,3 +58,4 @@
   - summarization.
 - It streamlines line editing.
   - Each point is an idea you engage directly.
+  - Points are easy to add, remove, and rearrange.
