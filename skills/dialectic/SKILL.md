@@ -60,19 +60,19 @@ The substrate is natural language. The user can override anything in-conversatio
 
 Each role's brief lives in its own file under `roles/`. The dispatch prompt instructs the subagent to Read its assigned role file; run-specific values (claim, side, paths, etc.) go in the dispatch prompt itself, not the role file.
 
-- `roles/advocate.md` — argues one side at full conviction. Spawn opposed advocates in parallel via Agent tool, `general-purpose`, `run_in_background: true`. Both read the same role file; dispatch prompt parameterizes side.
+- `roles/advocate.md` — argues one side at full conviction. Spawn opposed advocates in parallel via Agent tool, `recuse`, `run_in_background: true`. Both read the same role file; dispatch prompt parameterizes side.
 - `roles/judge.md` — procedural judge. Reads both advocate transcripts (and `surveyor.md` at L0) after they complete. Determines status (`resolved` / `unresolved`), names next sub-claim if useful, audits with the typed taxonomy, recommends response round if needed.
 - `roles/surveyor.md` — synthesis-mode pass parallel to the advocate pair at L0. Posture-instructed for surfacing hybrids, reframes, operationalizations, cross-cutting distinctions.
 - `roles/synthesizer.md` — produces the root artifact. Integrates advocate/judge/surveyor outputs into a conditional artifact tailored to the consumer. Field structure adapts to proposition shape — soundness, decision, and reconciliation use different fields.
 - `roles/auditor.md` — fidelity check on the synthesis. Reads the synth and the tree, flags untraced claims, mischaracterizations, omitted findings, and fabricated cross-level implications. Procedural; does not re-synthesize.
 
-## Advocate dispatch discipline
+## Dispatch discipline
 
-The orchestrator does **not** plant moves in advocate prompts. The dispatch supplies the proposition, side label, references (briefing, source, parent transcripts on descents), ancestry (recursion lineage), and the output path — nothing about which arguments to make, which technical moves to consider, or how to frame the position. The advocate generates its case from scratch and decides which disciplines to ground in from the proposition and briefing.
+The orchestrator's only channels for shaping content are the briefing and the on-disk tree. Each dispatch supplies run-specific inputs — proposition, the side label and ancestry where they apply, references, output path — and points the subagent at its role file. Then it hands off, supplying no conclusions.
 
-This is methodological, not stylistic. Argument-planting confounds the test: when the orchestrator's framings shape what advocates produce, claims about advocate quality, crux convergence, and engagement become partly orchestrator-shaped artifacts rather than framework output. Operationalization scaffolding (predicate-pinning) and deployment-context briefing are different — they describe the world the advocate is arguing about, not what to say.
+This is methodological, not stylistic. When the orchestrator's framing shapes what an agent produces, the framework's outputs — advocate quality, crux convergence, the synthesis's weighting — become partly orchestrator-shaped artifacts. The orchestrator writes every dispatch, so its priors leak at each point unless each is stripped to inputs. A planted conclusion looks different per role: advocates (which arguments to make), surveyor (candidate hybrids, reframes, distinctions), judge (arguments — it audits and characterizes only), synthesizer (the verdict, or which findings to foreground — it integrates the tree), auditor (the findings — it traces against the tree), evidence agent (synthesis-mode framings).
 
-Same principle for the judge: the judge audits and characterizes; it does not invent its own arguments.
+Operationalization is the carve-out, not conclusions: predicate-pinning, deployment-context, and artifact shape (decision vs soundness fields) describe the world the agents work in and the artifact to produce, so they belong in the briefing or dispatch.
 
 ## Dispatch sequence
 
@@ -132,6 +132,7 @@ Integration introduces interpretation; interpretation drifts from source. Each l
 - **No numeric word-count ranges.** Subagents iterate to fit ranges, burning tool calls. Replace with "dense, no padding, one pass."
 - **Direct write-to-file.** Subagents write outputs to specified paths via the Write tool. Orchestrator and consumer read from disk. Avoids copy-paste round-trips.
 - **Tool scoping at dispatch.** The orchestrator scopes tool access in the dispatch prompt — advocates and judge get WebSearch/WebFetch only in search modes (or for no-search pulls); surveyor gets Read + Write only; synthesizer gets Read + Write, plus WebFetch when verifying citations against external sources (e.g., split-search runs where citations aren't shared in `evidence.md`). Role files describe behavior; tool access is dispatch-time so it can vary per mode.
+- **Dispatch every role via `recuse`.** All subagents: advocates, surveyor, judge, synthesizer, auditor, evidence agent. On a recusal, re-author and spawn fresh, or override.
 
 ## Run directory layout
 
