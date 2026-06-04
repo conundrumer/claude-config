@@ -11,6 +11,5 @@ Personal source-of-truth for `~/.claude/` configuration. Structure mirrors `~/.c
 - `global-claude.md` — global CLAUDE.md instructions deployed to all projects.
 - `scripts/statusline-command.sh` — status bar script. Reads JSON context from stdin, outputs an ANSI line; also writes `~/.claude/usage.json`.
 - `scripts/notification-sound.sh` — Stop hook that plays the macOS sound named by the HTML-comment marker at the end of the last message.
-- `skills/session-schema/` — JSONL session format reference. Loaded automatically when parsing session transcripts.
 - `agents/recuse.md` — `recuse` subagent. Independent reviewer that recuses when the dispatch prompt carries the answer or steers the search.
 - `notes/` — write-ups on Claude's behavior, indexed in `notes/README.md`.
