@@ -42,6 +42,26 @@
   > Instructions as reasoning: { Trust framing finds more. { > 59% more hidden issues } | Fear framing does nothing. }
 - Single line code comments should be written in this form.
 
+## Numbered Form
+
+- Use when user requests responding in Nested Style.
+- All items are numbered:
+  - Headings
+  - Items
+  - Subitems
+- Example:
+  > ## 1. Good Technical Writing
+  > 
+  > 1. Good technical writing
+  >   1. knows its reader.
+  >   2. guides action.
+  >   3. improves over time.
+  >
+  > ## 2. Styles
+  >
+  > 1. Simplified Technical English
+  >   1. Use simple words.
+
 ## Motivation
 
 - Ordinary paragraphs hide their structure.
