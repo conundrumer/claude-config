@@ -2,7 +2,8 @@
 name: recuse
 description: >-
   Independent agent for any read that must not inherit your bias.
-  Give it the subject and the task only. It recuses if your prompt has interference.
+  Give it the subject and the task only, and do not add any elaboration to the prompt.
+  It recuses if your prompt has interference.
   If you judge the prompt was neutral and correct, reply with "OVERRIDE" via SendMessage.
   Otherwise, revise and spawn a fresh recuse.
 ---
