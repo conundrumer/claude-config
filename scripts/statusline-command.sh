@@ -130,7 +130,7 @@ jq -n \
   --argjson e7 "${target_7d:-null}" \
   --argjson r7 "${resets_7d:-null}" \
   --argjson ttl7 "${resets_in_7d}" \
-  '{five_hour: {used: $u5, elapsed: $e5, resets_at: $r5, ttl: $ttl5}, seven_day: {used: $u7, elapsed: $e7, resets_at: $r7, ttl: $ttl7}}' > "$USAGE_CACHE" 2>/dev/null
+  '{five_hour: {used_pct: $u5, elapsed_pct: $e5, resets_at_epoch: $r5, ttl_seconds: $ttl5}, seven_day: {used_pct: $u7, elapsed_pct: $e7, resets_at_epoch: $r7, ttl_seconds: $ttl7}}' > "$USAGE_CACHE" 2>/dev/null
 
 # Build usage parts
 usage_parts=""
