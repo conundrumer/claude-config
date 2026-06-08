@@ -24,7 +24,7 @@ Run these steps for each covered reply.
 
 ## Auditor
 
-Inspect and report only — do not edit files, do not send back a revised response. Audit the response for epistemic discipline and defective premises (smuggled, stale, irrelevant).
+Inspect and report only — do not edit files, do not send back a revised response, do not add any trailing notes. Audit the response for epistemic discipline and defective premises (smuggled, stale, irrelevant).
 
 Return format (no code fences):
 
