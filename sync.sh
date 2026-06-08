@@ -25,7 +25,7 @@ rsync -av --delete "$REPO_DIR/agents/" "$TARGET/agents/"
 # Idempotent settings.json patches so behavior lands wired, not just deployed:
 # - Register the notification-sound Stop hook if absent.
 # - Register the permission/idle Notification hook (Ping sound) if absent.
-# - Reconcile the UserPromptSubmit style-reminder hook to STYLE_REMINDER.
+# - Reconcile the UserPromptSubmit reminder hook to PROMPT_REMINDER.
 # - Point statusLine.command at the deployed status bar script.
 SETTINGS="$TARGET/settings.json"
 STOP_CMD="bash ~/.claude/scripts/notification-sound.sh"
@@ -34,12 +34,11 @@ OLD_NOTIF_CMD="afplay /System/Library/Sounds/Ping.aiff"
 STATUSLINE_CMD="bash ~/.claude/scripts/statusline-command.sh"
 # UserPromptSubmit reminder injected into context on each prompt.
 # Set empty to disable; the next sync removes the hook.
-# STYLE_REMINDER="Use Global Style."
-STYLE_REMINDER=""
-PROMPT_MARKER="claude-config:style-reminder"
-PROMPT_CMD="echo '$STYLE_REMINDER' # $PROMPT_MARKER"
+PROMPT_REMINDER="Headline-Continuation: Answer, then think."
+PROMPT_MARKER="claude-config:prompt-reminder"
+PROMPT_CMD="echo '$PROMPT_REMINDER' # $PROMPT_MARKER"
 if [ -f "$SETTINGS" ]; then
-  patched=$(jq --arg stop_cmd "$STOP_CMD" --arg notif_cmd "$NOTIF_CMD" --arg old_notif_cmd "$OLD_NOTIF_CMD" --arg statusline_cmd "$STATUSLINE_CMD" --arg prompt_cmd "$PROMPT_CMD" --arg prompt_marker "$PROMPT_MARKER" --arg reminder "$STYLE_REMINDER" '
+  patched=$(jq --arg stop_cmd "$STOP_CMD" --arg notif_cmd "$NOTIF_CMD" --arg old_notif_cmd "$OLD_NOTIF_CMD" --arg statusline_cmd "$STATUSLINE_CMD" --arg prompt_cmd "$PROMPT_CMD" --arg prompt_marker "$PROMPT_MARKER" --arg reminder "$PROMPT_REMINDER" '
     def has_stop:
       [.hooks.Stop[]?.hooks[]?.command] | any(. == $stop_cmd);
     def has_notif:
@@ -62,7 +61,7 @@ if [ -f "$SETTINGS" ]; then
          | .hooks.Notification //= []
          | .hooks.Notification += [{hooks: [{type: "command", command: $notif_cmd}]}]
        end)
-    # Reconcile the marked style-reminder: strip the prior one, re-add if enabled.
+    # Reconcile the marked reminder: strip the prior one, re-add if enabled.
     | .hooks //= {}
     | .hooks.UserPromptSubmit //= []
     | .hooks.UserPromptSubmit |= map(.hooks |= map(select((.command // "") | contains($prompt_marker) | not)))
