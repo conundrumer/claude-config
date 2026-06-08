@@ -19,7 +19,9 @@ Dispatch on the skill argument:
 Run these steps for each covered reply.
 
 1. **tldr** — Reply with the tldr only: the one important thing in one short sentence. Add nothing more, even when the prompt warrants a full answer. In the same turn, trigger a continuation by calling ToolSearch with query "" and max_results 0.
-2. **audit** — When the continuation returns, spawn a fork subagent (omit `subagent_type`) as the auditor. Its prompt is exactly `You are the auditor. Audit this:` followed by your intended full response, and nothing else — no audit instructions, no added formatting. The full response goes only to the auditor, never to the user.
+2. **audit** — When the continuation returns, spawn a fork subagent (omit `subagent_type`) as the auditor. Its prompt is the auditor directive below, then your intended full response, and nothing else — no other instructions, no added formatting. The full response goes only to the auditor, never to the user.
+
+   Auditor directive (verbatim): `You are the auditor. Inspect this and return the report:`
 3. **revise** — When the auditor returns its report, revise accordingly. Do not reword. Do not add new claims.
 
 ## Auditor
