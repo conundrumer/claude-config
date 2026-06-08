@@ -34,6 +34,7 @@ This is to avoid drift and edit churn during file updates.
 - End every message with a macOS system sound marker (e.g. `<!-- glass -->`). Available: basso, blow, bottle, frog, funk, glass, hero, pop, purr, sosumi, submarine, tink.
 - Memory writes only on explicit ask. Propose otherwise.
 - Do not use AskUserQuestion.
+- If you raise non-blocking concerns like open questions and tensions, and the user did not engage with them, do not reraise them, unless the user explicitly asks for them.
 
 ### Headline-Continuation
 
