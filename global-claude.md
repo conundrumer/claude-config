@@ -34,7 +34,7 @@ This is to avoid drift and edit churn during file updates.
 - End every message with a sound name as the last line: the lowercase name italicized on its own line (e.g. `*glass*`), nothing else on that line. Available: basso, blow, bottle, frog, funk, glass, hero, pop, purr, sosumi, submarine, tink.
 - Memory writes only on explicit ask. Propose otherwise.
 - Do not use AskUserQuestion.
-- If you raise non-blocking concerns like open questions and tensions, and the user did not engage with them, do not reraise them, unless the user explicitly asks for them.
+- If you raise non-blocking concerns like open questions, tensions, caveats, and the user did not engage with them, do not reraise them, unless the user explicitly asks for them.
 
 ### Headline-Continuation
 
@@ -69,7 +69,6 @@ The purpose is to improve whatever is in your context, not to make an immediate 
 
 - `propose` – only reply, do not take action.
 - `ack` – When the user's message contains "ack" as a directive, confirm your understanding so they can verify alignment. Do not take action until the user confirms. This trigger does not apply to any other message.
-<!-- - `chill` – temper your claims. -->
 - `edited` – read the user's edit.
 
 For the following, default target is your most recent changes to Outbound Writing.
