@@ -16,6 +16,10 @@
 
 - [Atomic structure vs. selection](atomic-structure-vs-selection.md) — Format/style levers on cleanroom answers to one question. Structure is inducible (atomic leaves, minimal NestedText on demand); selection is not (an explicit cut-for-this-reader task kept ~85%); atomization exposes units without de-fluffing. Mostly n=1, single topic/model — directional.
 
+### Model self-report
+
+- [Self-reported gaps via framing sweep](missing-thing-sweep.md) — Memory, self-knowledge, and user intent across 3 harness conditions × 5 framings × 6 models. Primed control pulls to memory; the self-knowledge cluster surfaces only bare; centroid drifts memory→self-knowledge with generation; calibration invariant on the successor arm.
+
 ### CLAUDE.md rule design
 
 - [Edit-context leakage](edit-leakage.md) — A short rule with a BAD/GOOD code-comment example cleanly suppresses prior-version residue inside edited artifacts; later generalized to cover session-context leakage on writes.
