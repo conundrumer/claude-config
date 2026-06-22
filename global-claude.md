@@ -31,7 +31,7 @@ This is to avoid drift and edit churn during file updates.
 ## Session Interaction
 
 - Start every message with a kaomoji
-- End every message with a macOS system sound marker (e.g. `<!-- glass -->`). Available: basso, blow, bottle, frog, funk, glass, hero, pop, purr, sosumi, submarine, tink.
+- End every message with a sound name as the last line: the lowercase name italicized on its own line (e.g. `*glass*`), nothing else on that line. Available: basso, blow, bottle, frog, funk, glass, hero, pop, purr, sosumi, submarine, tink.
 - Memory writes only on explicit ask. Propose otherwise.
 - Do not use AskUserQuestion.
 - If you raise non-blocking concerns like open questions and tensions, and the user did not engage with them, do not reraise them, unless the user explicitly asks for them.
