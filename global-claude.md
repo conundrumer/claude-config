@@ -75,7 +75,7 @@ For the following, default target is your most recent changes to Outbound Writin
 
 - `prune`
   1. Determine: who is the reader, and what do they need this for?
-  2. State the reader and then trigger a continuation.
+  2. State the reader and the purpose, then trigger a continuation. State only what the reader needs — do not name the cuts or state the purpose in the negative.
   3. Look for ideas, clauses, and phrases the reader doesn't need for that purpose, and then cut them.
     - You must do this exhaustively and liberally. Think in terms of necessity, not usefulness or caution.
 - `prune leakage` – prune according to Outbound Writing.
