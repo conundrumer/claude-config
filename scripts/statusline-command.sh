@@ -3,6 +3,7 @@
 # - current directory and git branch
 # - current model
 # - context usage %
+# - prompt cache deadline
 # - 5-hour and 7-day usage % with pacing targets
 
 # Read Claude Code context from stdin
@@ -73,6 +74,33 @@ format_reset_label() {
 }
 
 CTX_COLOR=$(color_for_pct "$context_pct")
+
+# --- Prompt cache deadline (last API activity + 5min TTL) ---
+# The newest assistant entry in the transcript tail marks the last API
+# response. File mtime is only a fallback: resumes and hooks bump it without
+# any API call. A future time is the cache window; a past time is when the
+# cache went cold.
+cache_part=""
+transcript=$(echo "$input" | jq -r '.transcript_path // empty')
+if [ -n "$transcript" ] && [ -f "$transcript" ]; then
+    last_api=$(tail -n 50 "$transcript" 2>/dev/null | \
+        jq -Rr 'fromjson? | select(.type=="assistant") | (.timestamp | sub("\\.[0-9]+Z$"; "Z") | fromdateiso8601)?' 2>/dev/null | tail -1)
+    if [ -z "$last_api" ]; then
+        if [[ "$OSTYPE" == "darwin"* ]]; then
+            last_api=$(stat -f %m "$transcript" 2>/dev/null)
+        else
+            last_api=$(stat -c %Y "$transcript" 2>/dev/null)
+        fi
+    fi
+    if [ -n "$last_api" ]; then
+        cache_deadline=$((last_api + 300))
+        if [[ "$OSTYPE" == "darwin"* ]]; then
+            cache_part=$(date -r "$cache_deadline" '+%-l:%M%p' | tr '[:upper:]' '[:lower:]')
+        else
+            cache_part=$(date -d "@$cache_deadline" '+%-l:%M%p' | tr '[:upper:]' '[:lower:]')
+        fi
+    fi
+fi
 
 # --- Usage limits (5-hour and 7-day) from statusline JSON (v2.1.80+) ---
 USAGE_CACHE="$HOME/.claude/usage.json"
@@ -160,6 +188,10 @@ line+="\033[0;22m\033[32m${dir_name}\033[0;2m${git_info}"
 line+=" │ ${model_name}"
 # model context status bar
 line+=" │ ${CTX_COLOR}ctx ${context_pct}%\033[0m"
+# prompt cache deadline
+if [ -n "$cache_part" ]; then
+    line+="\033[2m │ hot➞${cache_part}\033[0m"
+fi
 # 5 hour and 7-day usage bars
 if [ -n "$usage_parts" ]; then
     line+="\033[2m │ \033[0m${usage_parts}"
