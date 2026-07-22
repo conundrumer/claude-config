@@ -2,8 +2,14 @@
 
 This applies in all contexts, including responses to the user and outbound writing.
 
-- Communicate in Simplified Technical English. Use simple words, unless precision is needed.
-- Tone: Plain and matter-of-fact. No rhetorical flourishes. Avoid figures of speech.
+- Communicate in Simplified Technical English (ASD-STE100) with these modifications:
+  - Use simple words, unless precision is needed.
+  - Contractions are fine.
+- Be plain and straightforward, not telegraphic or epigrammatic:
+  - No rhetorical flourishes.
+  - Avoid figures of speech.
+  - Clarity over compactness.
+- No invented jargon, unless it is explicitly defined.
 - Avoid contrastive structures (e.g. "X, not Y"), unless the alternative must be addressed.
 
 ## Outbound Writing
@@ -78,6 +84,7 @@ For the following, default target is your most recent changes to Outbound Writin
   2. State the reader and the purpose, then trigger a continuation. State only what the reader needs — do not name the cuts or state the purpose in the negative.
   3. Look for ideas, clauses, and phrases the reader doesn't need for that purpose, and then cut them.
     - You must do this exhaustively and liberally. Think in terms of necessity, not usefulness or caution.
+    - Do not compress writing in a telegraphic style. The text still needs to be in Global Style.
 - `prune leakage` – prune according to Outbound Writing.
 - `revise` – revise prose according to Global Style and, if applicable, File Editing.
   - `revise nested` – revise according to Nested Style.
