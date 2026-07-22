@@ -141,11 +141,44 @@ if [ -n "$resets_7d" ]; then
     resets_7d_label=$(format_reset_label "$reset_epoch" 7d)
 fi
 
+# --- Fable weekly usage from the OAuth usage API cache ---
+# fetch-usage-api.sh refreshes the cache in the background and is a no-op
+# while the cache is fresh. The statusline stdin JSON does not carry
+# model-scoped windows (anthropics/claude-code#77846), so this is the only
+# source for Fable usage.
+API_CACHE="$HOME/.claude/usage-api.json"
+( bash "$HOME/.claude/scripts/fetch-usage-api.sh" >/dev/null 2>&1 & )
+
+usage_fable=""
+resets_fable=""
+target_fable=""
+if [ -f "$API_CACHE" ]; then
+    read -r usage_fable resets_fable <<< "$(jq -r '
+        .data.limits[]?
+        | select((.scope.model.display_name // "") | test("fable"; "i"))
+        | "\(.percent // 0 | floor) \(if .resets_at then (.resets_at | sub("\\.[0-9]+"; "") | sub("\\+00:00"; "Z") | fromdateiso8601) else "" end)"
+        ' "$API_CACHE" 2>/dev/null | head -1)"
+fi
+
+# Fable pacing target over the weekly window
+if [ -n "$resets_fable" ]; then
+    reset_epoch=$resets_fable
+    window_secs=$((7 * 86400))
+    start_epoch=$((reset_epoch - window_secs))
+    elapsed=$((NOW_EPOCH - start_epoch))
+    [ "$elapsed" -lt 0 ] && elapsed=0
+    [ "$elapsed" -gt "$window_secs" ] && elapsed=$window_secs
+    target_fable=$(( (elapsed * 100 + window_secs / 2) / window_secs))
+    resets_fable_label=$(format_reset_label "$reset_epoch" 7d)
+fi
+
 # Compute seconds until reset
 resets_in_5h="null"
 resets_in_7d="null"
+resets_in_fable="null"
 [ -n "$resets_5h" ] && resets_in_5h=$(( resets_5h - NOW_EPOCH ))
 [ -n "$resets_7d" ] && resets_in_7d=$(( resets_7d - NOW_EPOCH ))
+[ -n "$resets_fable" ] && resets_in_fable=$(( resets_fable - NOW_EPOCH ))
 
 # Write to cache file for external tools (only if rate limit data is present)
 [ -z "$usage_5h" ] && [ -z "$usage_7d" ] || \
@@ -158,7 +191,11 @@ jq -n \
   --argjson e7 "${target_7d:-null}" \
   --argjson r7 "${resets_7d:-null}" \
   --argjson ttl7 "${resets_in_7d}" \
-  '{five_hour: {used_pct: $u5, elapsed_pct: $e5, resets_at_epoch: $r5, ttl_seconds: $ttl5}, seven_day: {used_pct: $u7, elapsed_pct: $e7, resets_at_epoch: $r7, ttl_seconds: $ttl7}}' > "$USAGE_CACHE" 2>/dev/null
+  --argjson uf "${usage_fable:-null}" \
+  --argjson ef "${target_fable:-null}" \
+  --argjson rf "${resets_fable:-null}" \
+  --argjson ttlf "${resets_in_fable}" \
+  '{five_hour: {used_pct: $u5, elapsed_pct: $e5, resets_at_epoch: $r5, ttl_seconds: $ttl5}, seven_day: {used_pct: $u7, elapsed_pct: $e7, resets_at_epoch: $r7, ttl_seconds: $ttl7}, fable_weekly: {used_pct: $uf, elapsed_pct: $ef, resets_at_epoch: $rf, ttl_seconds: $ttlf}}' > "$USAGE_CACHE" 2>/dev/null
 
 # Build usage parts
 usage_parts=""
@@ -179,6 +216,15 @@ if [ -n "$usage_7d" ]; then
     [ -n "$usage_parts" ] && usage_parts="${usage_parts}\033[2m │ \033[0m"
     usage_parts="${usage_parts}${U7_COLOR}wk${reset_7d_label_str} ${usage_7d}%${target_str}\033[0m"
 fi
+if [ -n "$usage_fable" ]; then
+    UF_COLOR=$(color_for_pct "$usage_fable")
+    reset_fable_label_str=""
+    [ -n "$resets_fable_label" ] && reset_fable_label_str="➞${resets_fable_label}"
+    target_str=""
+    [ -n "$target_fable" ] && target_str="/${target_fable}%"
+    [ -n "$usage_parts" ] && usage_parts="${usage_parts}\033[2m │ \033[0m"
+    usage_parts="${usage_parts}${UF_COLOR}fbl${reset_fable_label_str} ${usage_fable}%${target_str}\033[0m"
+fi
 
 # Single line output
 line=""
@@ -192,7 +238,7 @@ line+=" │ ${CTX_COLOR}ctx ${context_pct}%\033[0m"
 if [ -n "$cache_part" ]; then
     line+="\033[2m │ hot➞${cache_part}\033[0m"
 fi
-# 5 hour and 7-day usage bars
+# usage bars
 if [ -n "$usage_parts" ]; then
     line+="\033[2m │ \033[0m${usage_parts}"
 fi

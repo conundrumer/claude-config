@@ -10,6 +10,7 @@ Personal source-of-truth for `~/.claude/` configuration. Structure mirrors `~/.c
 
 - `global-claude.md` — global CLAUDE.md instructions deployed to all projects.
 - `scripts/statusline-command.sh` — status bar script.
+- `scripts/fetch-usage-api.sh` — caches the OAuth usage API response to `~/.claude/usage-api.json`, needed for Fable usage.
 - `scripts/notification-sound.sh` — Stop hook that plays a macOS sound.
 - `agents/recuse.md` — `recuse` subagent, an independent reviewer.
 - `notes/` — write-ups on Claude's behavior, indexed in `notes/README.md`.
