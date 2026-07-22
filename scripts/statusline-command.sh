@@ -75,7 +75,7 @@ format_reset_label() {
 
 CTX_COLOR=$(color_for_pct "$context_pct")
 
-# --- Prompt cache deadline (last API activity + 5min TTL) ---
+# --- Prompt cache deadline (last API activity + 1h TTL) ---
 # The newest assistant entry in the transcript tail marks the last API
 # response. File mtime is only a fallback: resumes and hooks bump it without
 # any API call. A future time is the cache window; a past time is when the
@@ -93,7 +93,7 @@ if [ -n "$transcript" ] && [ -f "$transcript" ]; then
         fi
     fi
     if [ -n "$last_api" ]; then
-        cache_deadline=$((last_api + 300))
+        cache_deadline=$((last_api + 3600))
         if [[ "$OSTYPE" == "darwin"* ]]; then
             cache_part=$(date -r "$cache_deadline" '+%-l:%M%p' | tr '[:upper:]' '[:lower:]')
         else
